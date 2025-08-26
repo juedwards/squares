@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Square Formation Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .game-container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 600px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.2em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .game-rules {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #555;
+            text-align: left;
+        }
+
+        .game-rules h3 {
+            margin-top: 0;
+            color: #333;
+            text-align: center;
+        }
+
+        .bot-thinking {
+            background: #f39c12;
+            color: white;
+            animation: thinking 1.5s infinite;
+        }
+
+        @keyframes thinking {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .game-status {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .game-status.black-turn {
+            background: #333;
+            color: white;
+        }
+
+        .game-status.white-turn {
+            background: #f0f0f0;
+            color: #333;
+            border: 2px solid #999;
+        }
+
+        .game-status.game-over {
+            background: #27ae60;
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        #gameCanvas {
+            border: 4px solid #333;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transition: transform 0.2s ease;
+        }
+
+        #gameCanvas:hover {
+            transform: scale(1.02);
+        }
+
+        #gameCanvas.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .score-board {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .player-score {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .counter-preview {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
+            border: 3px solid #333;
+            display: inline-block;
+        }
+
+        .black-preview {
+            background: #333;
+        }
+
+        .white-preview {
+            background: white;
+        }
+
+        .score-value {
+            font-size: 24px;
+            color: #e74c3c;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .controls {
+            margin-top: 20px;
+        }
+
+        .restart-btn {
+            padding: 12px 25px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            margin: 0 10px;
+        }
+
+        .restart-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .moves-counter {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Square Formation Game</h1>
+        
+        <div class="game-rules">
+            <h3>How to Play</h3>
+            <strong>Objective:</strong> Create 2×2 squares of your color to score points!<br>
+            <strong>Rules:</strong> You play as Black against the AI Bot (White). Take turns placing counters. You can only place in empty spaces. Game ends when the board is full. Most squares wins!
+        </div>
+
+        <div id="gameStatus" class="game-status black-turn">
+            Your Turn (Black)
+        </div>
+
+        <canvas id="gameCanvas" width="480" height="480"></canvas>
+        
+        <div class="score-board">
+            <div class="player-score">
+                <div class="player-info">
+                    <div class="counter-preview black-preview"></div>
+                    <span>You (Black)</span>
+                </div>
+                <div class="score-value" id="blackScore">0</div>
+                <small>Squares</small>
+            </div>
+            
+            <div class="player-score">
+                <div class="player-info">
+                    <div class="counter-preview white-preview"></div>
+                    <span>AI Bot (White)</span>
+                </div>
+                <div class="score-value" id="whiteScore">0</div>
+                <small>Squares</small>
+            </div>
+        </div>
+
+        <div class="moves-counter">
+            Move: <span id="moveCounter">1</span> / 64
+        </div>
+
+        <div class="controls">
+            <button class="restart-btn" onclick="restartGame()">
+                🔄 Restart Game
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Game setup
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const gridSize = 8;
+        const cellSize = canvas.width / gridSize;
+
+        // Game state variables
+        let grid, currentPlayer, gameOver, moveCount, blackSquares, whiteSquares, botThinking;
+
+        // Initialize all variables
+        function resetGameState() {
+            grid = Array(gridSize).fill().map(() => Array(gridSize).fill(null));
+            currentPlayer = 'black';
+            gameOver = false;
+            moveCount = 0;
+            blackSquares = 0;
+            whiteSquares = 0;
+            botThinking = false;
+        }
+
+        // Update the game status display
+        function updateGameStatus() {
+            const statusElement = document.getElementById('gameStatus');
+            
+            if (gameOver) {
+                let winner;
+                if (blackSquares > whiteSquares) {
+                    winner = 'You Win! 🎉';
+                } else if (whiteSquares > blackSquares) {
+                    winner = 'AI Bot Wins! 🤖';
+                } else {
+                    winner = "It's a Tie! 🤝";
+                }
+                statusElement.textContent = `Game Over - ${winner}`;
+                statusElement.className = 'game-status game-over';
+            } else if (botThinking) {
+                statusElement.textContent = 'AI Bot is thinking...';
+                statusElement.className = 'game-status bot-thinking';
+            } else if (currentPlayer === 'black') {
+                statusElement.textContent = 'Your Turn (Black)';
+                statusElement.className = 'game-status black-turn';
+            } else {
+                statusElement.textContent = 'AI Bot\'s Turn (White)';
+                statusElement.className = 'game-status white-turn';
+            }
+        }
+
+        // Update score display
+        function updateScores() {
+            document.getElementById('blackScore').textContent = blackSquares;
+            document.getElementById('whiteScore').textContent = whiteSquares;
+        }
+
+        // Update move counter
+        function updateMoveCounter() {
+            document.getElementById('moveCounter').textContent = moveCount;
+        }
+
+        // Check if a 2x2 square at position is complete
+        function getSquareColor(row, col) {
+            if (row >= gridSize - 1 || col >= gridSize - 1) return null;
+            
+            const topLeft = grid[row][col];
+            const topRight = grid[row][col + 1];
+            const bottomLeft = grid[row + 1][col];
+            const bottomRight = grid[row + 1][col + 1];
+            
+            if (topLeft && topLeft === topRight && topLeft === bottomLeft && topLeft === bottomRight) {
+                return topLeft;
+            }
+            return null;
+        }
+
+        // Count completed squares for each player
+        function countSquares() {
+            let black = 0;
+            let white = 0;
+            
+            for (let row = 0; row < gridSize - 1; row++) {
+                for (let col = 0; col < gridSize - 1; col++) {
+                    const color = getSquareColor(row, col);
+                    if (color === 'black') black++;
+                    else if (color === 'white') white++;
+                }
+            }
+            
+            return { black, white };
+        }
+
+        // Draw a counter on the grid
+        function drawCounter(col, row, color) {
+            const centerX = col * cellSize + cellSize / 2;
+            const centerY = row * cellSize + cellSize / 2;
+            const radius = cellSize * 0.35;
+            
+            // Shadow
+            ctx.beginPath();
+            ctx.arc(centerX + 2, centerY + 2, radius, 0, 2 * Math.PI);
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+            ctx.fill();
+            
+            // Main counter
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            ctx.fillStyle = color === 'black' ? '#333' : 'white';
+            ctx.fill();
+            
+            // Border
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // Highlight
+            ctx.beginPath();
+            ctx.arc(centerX - radius * 0.3, centerY - radius * 0.3, radius * 0.3, 0, 2 * Math.PI);
+            ctx.fillStyle = color === 'black' ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.8)';
+            ctx.fill();
+        }
+
+        // Draw the game grid
+        function drawGrid() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw background and grid lines
+            for (let row = 0; row < gridSize; row++) {
+                for (let col = 0; col < gridSize; col++) {
+                    const x = col * cellSize;
+                    const y = row * cellSize;
+                    
+                    // Alternating background
+                    ctx.fillStyle = (row + col) % 2 === 0 ? '#f8f8f8' : '#e8e8e8';
+                    ctx.fillRect(x, y, cellSize, cellSize);
+                    
+                    // Grid lines
+                    ctx.strokeStyle = '#ccc';
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(x, y, cellSize, cellSize);
+                }
+            }
+            
+            // Highlight completed squares
+            for (let row = 0; row < gridSize - 1; row++) {
+                for (let col = 0; col < gridSize - 1; col++) {
+                    const color = getSquareColor(row, col);
+                    if (color) {
+                        const x = col * cellSize + 2;
+                        const y = row * cellSize + 2;
+                        const size = cellSize * 2 - 4;
+                        
+                        ctx.fillStyle = color === 'black' ? 'rgba(100, 100, 100, 0.3)' : 'rgba(200, 200, 200, 0.5)';
+                        ctx.fillRect(x, y, size, size);
+                        
+                        ctx.strokeStyle = color === 'black' ? '#333' : '#666';
+                        ctx.lineWidth = 3;
+                        ctx.strokeRect(x, y, size, size);
+                    }
+                }
+            }
+            
+            // Draw all counters
+            for (let row = 0; row < gridSize; row++) {
+                for (let col = 0; col < gridSize; col++) {
+                    if (grid[row][col]) {
+                        drawCounter(col, row, grid[row][col]);
+                    }
+                }
+            }
+        }
+
+        // Evaluate move for AI
+        function evaluateMove(row, col, player) {
+            let score = 0;
+            
+            // Test placing piece
+            grid[row][col] = player;
+            const newScores = countSquares();
+            const currentScores = { black: blackSquares, white: whiteSquares };
+            const gained = (player === 'white' ? newScores.white : newScores.black) - 
+                          (player === 'white' ? currentScores.white : currentScores.black);
+            score += gained * 100;
+            
+            // Test blocking opponent
+            grid[row][col] = player === 'white' ? 'black' : 'white';
+            const blockScores = countSquares();
+            const blocked = (player === 'white' ? blockScores.black : blockScores.white) - 
+                           (player === 'white' ? currentScores.black : currentScores.white);
+            score += blocked * 50;
+            
+            // Reset
+            grid[row][col] = null;
+            
+            // Center preference
+            const centerDistance = Math.abs(row - 3.5) + Math.abs(col - 3.5);
+            score += (7 - centerDistance) * 2;
+            
+            return score;
+        }
+
+        // AI finds best move
+        function getBestMove() {
+            const emptySpaces = [];
+            
+            for (let row = 0; row < gridSize; row++) {
+                for (let col = 0; col < gridSize; col++) {
+                    if (grid[row][col] === null) {
+                        emptySpaces.push({ row, col });
+                    }
+                }
+            }
+            
+            if (emptySpaces.length === 0) return null;
+            
+            let bestScore = -Infinity;
+            let bestMoves = [];
+            
+            for (const space of emptySpaces) {
+                const score = evaluateMove(space.row, space.col, 'white');
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestMoves = [space];
+                } else if (score === bestScore) {
+                    bestMoves.push(space);
+                }
+            }
+            
+            return bestMoves[Math.floor(Math.random() * bestMoves.length)];
+        }
+
+        // Bot makes a move
+        function botMove() {
+            if (gameOver || currentPlayer !== 'white' || botThinking) return;
+            
+            botThinking = true;
+            updateGameStatus();
+            
+            const move = getBestMove();
+            
+            if (move) {
+                setTimeout(() => {
+                    placeCounter(move.col, move.row);
+                    botThinking = false;
+                    updateGameStatus(); // Update status after bot finishes thinking
+                }, 800);
+            } else {
+                botThinking = false;
+                updateGameStatus(); // Update status if no move available
+            }
+        }
+
+        // Place a counter on the grid
+        function placeCounter(col, row) {
+            if (grid[row][col] !== null || gameOver) return;
+            
+            grid[row][col] = currentPlayer;
+            moveCount++;
+            
+            // Update scores
+            const scores = countSquares();
+            blackSquares = scores.black;
+            whiteSquares = scores.white;
+            
+            // Switch players
+            currentPlayer = currentPlayer === 'black' ? 'white' : 'black';
+            
+            // Check game over
+            if (moveCount >= 64) {
+                gameOver = true;
+            }
+            
+            // Update display
+            drawGrid();
+            updateGameStatus();
+            updateScores();
+            updateMoveCounter();
+            
+            // Bot's turn
+            if (currentPlayer === 'white' && !gameOver) {
+                setTimeout(botMove, 1000);
+            }
+        }
+
+        // Restart the game
+        function restartGame() {
+            resetGameState();
+            drawGrid();
+            updateGameStatus();
+            updateScores();
+            updateMoveCounter();
+        }
+
+        // Handle mouse clicks
+        canvas.addEventListener('click', function(event) {
+            if (gameOver || currentPlayer !== 'black' || botThinking) return;
+            
+            const rect = canvas.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            
+            const col = Math.floor(x / cellSize);
+            const row = Math.floor(y / cellSize);
+            
+            if (col >= 0 && col < gridSize && row >= 0 && row < gridSize) {
+                placeCounter(col, row);
+            }
+        });
+
+        // Handle mouse hover
+        canvas.addEventListener('mousemove', function(event) {
+            if (gameOver || currentPlayer !== 'black' || botThinking) {
+                canvas.style.cursor = 'not-allowed';
+                return;
+            }
+            
+            const rect = canvas.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            
+            const col = Math.floor(x / cellSize);
+            const row = Math.floor(y / cellSize);
+            
+            if (col >= 0 && col < gridSize && row >= 0 && row < gridSize && grid[row][col] === null) {
+                canvas.style.cursor = 'pointer';
+            } else {
+                canvas.style.cursor = 'default';
+            }
+        });
+
+        // Start the game
+        resetGameState();
+        drawGrid();
+        updateGameStatus();
+        updateScores();
+        updateMoveCounter();
+    </script>
+</body>
+</html>
