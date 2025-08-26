@@ -53,17 +53,6 @@
             font-size: clamp(14px, 3vw, 16px);
         }
 
-        .bot-thinking {
-            background: #f39c12;
-            color: white;
-            animation: thinking 1.5s infinite;
-        }
-
-        @keyframes thinking {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
-        }
-
         .game-status {
             margin-bottom: 20px;
             padding: 15px;
@@ -88,6 +77,17 @@
             background: #27ae60;
             color: white;
             animation: pulse 2s infinite;
+        }
+
+        .game-status.bot-thinking {
+            background: #f39c12;
+            color: white;
+            animation: thinking 1.5s infinite;
+        }
+
+        @keyframes thinking {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
         }
 
         @keyframes pulse {
@@ -176,11 +176,15 @@
 
         .controls {
             margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            align-items: center;
         }
 
-        .restart-btn {
+        .restart-btn, .settings-btn {
             padding: 12px 25px;
-            background: #3498db;
             color: white;
             border: none;
             border-radius: 25px;
@@ -189,8 +193,14 @@
             text-transform: uppercase;
             font-size: clamp(14px, 3vw, 16px);
             transition: all 0.3s ease;
-            margin: 0 10px;
             touch-action: manipulation;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .restart-btn {
+            background: #3498db;
         }
 
         .restart-btn:hover, .restart-btn:active {
@@ -199,13 +209,182 @@
             box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
         }
 
+        .settings-btn {
+            background: #9b59b6;
+        }
+
+        .settings-btn:hover, .settings-btn:active {
+            background: #8e44ad;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(155, 89, 182, 0.4);
+        }
+
         .moves-counter {
             margin-top: 15px;
             font-size: clamp(12px, 2.5vw, 14px);
             color: #666;
         }
 
-        /* Mobile-specific adjustments */
+        /* Settings Modal */
+        .settings-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .settings-modal.show {
+            display: flex;
+        }
+
+        .settings-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 15px;
+        }
+
+        .settings-header h2 {
+            margin: 0;
+            color: #333;
+            font-size: clamp(18px, 4vw, 24px);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .difficulty-section {
+            margin-bottom: 25px;
+        }
+
+        .difficulty-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: clamp(16px, 3.5vw, 18px);
+        }
+
+        .difficulty-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .difficulty-option {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .difficulty-option:hover {
+            border-color: #3498db;
+            background: #f8f9ff;
+        }
+
+        .difficulty-option.selected {
+            border-color: #3498db;
+            background: #e3f2fd;
+        }
+
+        .difficulty-option input[type="radio"] {
+            margin-right: 15px;
+            transform: scale(1.2);
+        }
+
+        .difficulty-info {
+            flex: 1;
+        }
+
+        .difficulty-name {
+            font-weight: bold;
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .difficulty-desc {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .difficulty-stats {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        .current-difficulty {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+        }
+
+        .save-settings-btn {
+            width: 100%;
+            padding: 15px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .save-settings-btn:hover {
+            background: #229954;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+        }
+
+        /* Mobile optimizations */
         @media (max-width: 600px) {
             body {
                 padding: 5px;
@@ -216,55 +395,20 @@
                 border-radius: 10px;
             }
             
-            .game-rules {
-                padding: 12px;
-                margin-bottom: 15px;
-            }
-            
-            .game-status {
-                margin-bottom: 15px;
-                padding: 12px;
-            }
-            
-            .score-board {
-                padding: 12px;
-                margin-top: 15px;
-            }
-            
-            .restart-btn {
-                padding: 10px 20px;
-                margin: 5px;
-            }
-            
             #gameCanvas:hover {
-                transform: none; /* Disable hover effects on mobile */
-            }
-        }
-
-        /* Very small screens */
-        @media (max-width: 400px) {
-            .player-score {
-                min-width: 100px;
-            }
-            
-            .player-info {
-                font-size: 12px;
-            }
-            
-            .counter-preview {
-                margin-right: 5px;
+                transform: none;
             }
         }
     </style>
 </head>
 <body>
     <div class="game-container">
-        <h1>Square Formation Game</h1>
+        <h1>Squares and Pebbles Game</h1>
         
         <div class="game-rules">
             <h3>How to Play</h3>
             <strong>Objective:</strong> Create 2×2 squares of your color to score points!<br>
-            <strong>Rules:</strong> You play as Black against the AI Bot (White). Take turns placing counters. You can only place in empty spaces. Game ends when the board is full. Most 2x2 squares wins!
+            <strong>Rules:</strong> You play as Black against the AI Bot (White). Take turns placing counters. You can only place in empty spaces. Game ends when the board is full. Most squares wins!
         </div>
 
         <div id="gameStatus" class="game-status black-turn">
@@ -303,46 +447,80 @@
             <button class="restart-btn" onclick="restartGame()">
                 🔄 Restart Game
             </button>
+            <button class="settings-btn" onclick="openSettings()">
+                ⚙️ Settings
+            </button>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="settings-modal">
+        <div class="settings-content">
+            <div class="settings-header">
+                <h2>Game Settings</h2>
+                <button class="close-btn" onclick="closeSettings()">&times;</button>
+            </div>
+            
+            <div class="difficulty-section">
+                <h3>AI Difficulty Level</h3>
+                <div class="difficulty-options">
+                    <label class="difficulty-option" onclick="selectDifficulty('easy')">
+                        <input type="radio" name="difficulty" value="easy">
+                        <div class="difficulty-info">
+                            <div class="difficulty-name">🟢 Easy</div>
+                            <div class="difficulty-desc">AI makes random moves with basic square completion</div>
+                            <div class="difficulty-stats">• Random placement 60% of time • Basic blocking</div>
+                        </div>
+                    </label>
+                    
+                    <label class="difficulty-option selected" onclick="selectDifficulty('intermediate')">
+                        <input type="radio" name="difficulty" value="intermediate" checked>
+                        <div class="difficulty-info">
+                            <div class="difficulty-name">🟡 Intermediate</div>
+                            <div class="difficulty-desc">Smart AI that completes squares and blocks yours</div>
+                            <div class="difficulty-stats">• Strategic play • Good blocking • Center preference</div>
+                        </div>
+                    </label>
+                    
+                    <label class="difficulty-option" onclick="selectDifficulty('hard')">
+                        <input type="radio" name="difficulty" value="hard">
+                        <div class="difficulty-info">
+                            <div class="difficulty-name">🔴 Hard</div>
+                            <div class="difficulty-desc">Advanced AI with multi-move planning and trap setting</div>
+                            <div class="difficulty-stats">• Looks ahead 2-3 moves • Sets traps • Very aggressive</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="current-difficulty">
+                Currently playing on: <strong id="currentDifficultyText">🟡 Intermediate</strong>
+            </div>
+            
+            <button class="save-settings-btn" onclick="saveSettings()">
+                💾 Save Settings & Apply
+            </button>
         </div>
     </div>
 
     <script>
-        // Game setup
+        // Game variables
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const gridSize = 8;
+        const cellSize = 60;
         
-        // Make canvas responsive
-        function resizeCanvas() {
-            const container = canvas.parentElement;
-            const maxSize = Math.min(
-                container.clientWidth - 20, // Account for padding
-                window.innerHeight * 0.5,   // Don't take more than half the screen height
-                480 // Maximum size
-            );
-            
-            canvas.style.width = maxSize + 'px';
-            canvas.style.height = maxSize + 'px';
-            
-            // Keep internal resolution high for crisp rendering
-            const scale = window.devicePixelRatio || 1;
-            canvas.width = 480 * scale;
-            canvas.height = 480 * scale;
-            ctx.scale(scale, scale);
-            
-            // Only redraw if the grid exists
-            if (grid && grid.length > 0) {
-                drawGrid();
-            }
-        }
-        
-        const cellSize = 480 / gridSize; // Use fixed internal size
+        let grid = [];
+        let currentPlayer = 'black';
+        let gameOver = false;
+        let moveCount = 0;
+        let blackSquares = 0;
+        let whiteSquares = 0;
+        let botThinking = false;
+        let aiDifficulty = 'intermediate';
 
-        // Game state variables
-        let grid, currentPlayer, gameOver, moveCount, blackSquares, whiteSquares, botThinking;
-
-        // Initialize all variables
-        function resetGameState() {
+        // Initialize game
+        function initGame() {
             grid = Array(gridSize).fill().map(() => Array(gridSize).fill(null));
             currentPlayer = 'black';
             gameOver = false;
@@ -350,36 +528,49 @@
             blackSquares = 0;
             whiteSquares = 0;
             botThinking = false;
+            
+            setupCanvas();
+            drawGrid();
+            updateDisplay();
         }
 
-        // Update the game status display
+        // Setup responsive canvas
+        function setupCanvas() {
+            const container = canvas.parentElement;
+            const maxSize = Math.min(container.clientWidth - 20, 480);
+            canvas.style.width = maxSize + 'px';
+            canvas.style.height = maxSize + 'px';
+        }
+
+        // Update all displays
+        function updateDisplay() {
+            updateGameStatus();
+            updateScores();
+            updateMoveCounter();
+        }
+
+        // Update game status
         function updateGameStatus() {
-            const statusElement = document.getElementById('gameStatus');
+            const statusEl = document.getElementById('gameStatus');
             
             if (gameOver) {
-                let winner;
-                if (blackSquares > whiteSquares) {
-                    winner = 'You Win! 🎉';
-                } else if (whiteSquares > blackSquares) {
-                    winner = 'AI Bot Wins! 🤖';
-                } else {
-                    winner = "It's a Tie! 🤝";
-                }
-                statusElement.textContent = `Game Over - ${winner}`;
-                statusElement.className = 'game-status game-over';
+                let winner = blackSquares > whiteSquares ? 'You Win! 🎉' : 
+                           whiteSquares > blackSquares ? 'AI Bot Wins! 🤖' : "It's a Tie! 🤝";
+                statusEl.textContent = `Game Over - ${winner}`;
+                statusEl.className = 'game-status game-over';
             } else if (botThinking) {
-                statusElement.textContent = 'AI Bot is thinking...';
-                statusElement.className = 'game-status bot-thinking';
+                statusEl.textContent = 'AI Bot is thinking...';
+                statusEl.className = 'game-status bot-thinking';
             } else if (currentPlayer === 'black') {
-                statusElement.textContent = 'Your Turn (Black)';
-                statusElement.className = 'game-status black-turn';
+                statusEl.textContent = 'Your Turn (Black)';
+                statusEl.className = 'game-status black-turn';
             } else {
-                statusElement.textContent = 'AI Bot\'s Turn (White)';
-                statusElement.className = 'game-status white-turn';
+                statusEl.textContent = 'AI Bot\'s Turn (White)';
+                statusEl.className = 'game-status white-turn';
             }
         }
 
-        // Update score display
+        // Update scores
         function updateScores() {
             document.getElementById('blackScore').textContent = blackSquares;
             document.getElementById('whiteScore').textContent = whiteSquares;
@@ -390,25 +581,21 @@
             document.getElementById('moveCounter').textContent = moveCount;
         }
 
-        // Check if a 2x2 square at position is complete
+        // Check if square is complete
         function getSquareColor(row, col) {
             if (row >= gridSize - 1 || col >= gridSize - 1) return null;
             
-            const topLeft = grid[row][col];
-            const topRight = grid[row][col + 1];
-            const bottomLeft = grid[row + 1][col];
-            const bottomRight = grid[row + 1][col + 1];
+            const tl = grid[row][col];
+            const tr = grid[row][col + 1];
+            const bl = grid[row + 1][col];
+            const br = grid[row + 1][col + 1];
             
-            if (topLeft && topLeft === topRight && topLeft === bottomLeft && topLeft === bottomRight) {
-                return topLeft;
-            }
-            return null;
+            return (tl && tl === tr && tl === bl && tl === br) ? tl : null;
         }
 
-        // Count completed squares for each player
+        // Count completed squares
         function countSquares() {
-            let black = 0;
-            let white = 0;
+            let black = 0, white = 0;
             
             for (let row = 0; row < gridSize - 1; row++) {
                 for (let col = 0; col < gridSize - 1; col++) {
@@ -421,7 +608,51 @@
             return { black, white };
         }
 
-        // Draw a counter on the grid
+        // Draw the game grid
+        function drawGrid() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw grid background
+            for (let row = 0; row < gridSize; row++) {
+                for (let col = 0; col < gridSize; col++) {
+                    const x = col * cellSize;
+                    const y = row * cellSize;
+                    
+                    ctx.fillStyle = (row + col) % 2 === 0 ? '#f8f8f8' : '#e8e8e8';
+                    ctx.fillRect(x, y, cellSize, cellSize);
+                    
+                    ctx.strokeStyle = '#ccc';
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(x, y, cellSize, cellSize);
+                }
+            }
+            
+            // Highlight completed squares
+            for (let row = 0; row < gridSize - 1; row++) {
+                for (let col = 0; col < gridSize - 1; col++) {
+                    const color = getSquareColor(row, col);
+                    if (color) {
+                        ctx.fillStyle = color === 'black' ? 'rgba(100, 100, 100, 0.3)' : 'rgba(200, 200, 200, 0.5)';
+                        ctx.fillRect(col * cellSize + 2, row * cellSize + 2, cellSize * 2 - 4, cellSize * 2 - 4);
+                        
+                        ctx.strokeStyle = color === 'black' ? '#333' : '#666';
+                        ctx.lineWidth = 3;
+                        ctx.strokeRect(col * cellSize + 2, row * cellSize + 2, cellSize * 2 - 4, cellSize * 2 - 4);
+                    }
+                }
+            }
+            
+            // Draw counters
+            for (let row = 0; row < gridSize; row++) {
+                for (let col = 0; col < gridSize; col++) {
+                    if (grid[row][col]) {
+                        drawCounter(col, row, grid[row][col]);
+                    }
+                }
+            }
+        }
+
+        // Draw a counter
         function drawCounter(col, row, color) {
             const centerX = col * cellSize + cellSize / 2;
             const centerY = row * cellSize + cellSize / 2;
@@ -433,7 +664,7 @@
             ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
             ctx.fill();
             
-            // Main counter
+            // Counter
             ctx.beginPath();
             ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
             ctx.fillStyle = color === 'black' ? '#333' : 'white';
@@ -451,89 +682,49 @@
             ctx.fill();
         }
 
-        // Draw the game grid
-        function drawGrid() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // Place counter
+        function placeCounter(col, row) {
+            if (grid[row][col] !== null || gameOver) return;
             
-            // Draw background and grid lines
-            for (let row = 0; row < gridSize; row++) {
-                for (let col = 0; col < gridSize; col++) {
-                    const x = col * cellSize;
-                    const y = row * cellSize;
-                    
-                    // Alternating background
-                    ctx.fillStyle = (row + col) % 2 === 0 ? '#f8f8f8' : '#e8e8e8';
-                    ctx.fillRect(x, y, cellSize, cellSize);
-                    
-                    // Grid lines
-                    ctx.strokeStyle = '#ccc';
-                    ctx.lineWidth = 1;
-                    ctx.strokeRect(x, y, cellSize, cellSize);
-                }
-            }
+            grid[row][col] = currentPlayer;
+            moveCount++;
             
-            // Highlight completed squares
-            for (let row = 0; row < gridSize - 1; row++) {
-                for (let col = 0; col < gridSize - 1; col++) {
-                    const color = getSquareColor(row, col);
-                    if (color) {
-                        const x = col * cellSize + 2;
-                        const y = row * cellSize + 2;
-                        const size = cellSize * 2 - 4;
-                        
-                        ctx.fillStyle = color === 'black' ? 'rgba(100, 100, 100, 0.3)' : 'rgba(200, 200, 200, 0.5)';
-                        ctx.fillRect(x, y, size, size);
-                        
-                        ctx.strokeStyle = color === 'black' ? '#333' : '#666';
-                        ctx.lineWidth = 3;
-                        ctx.strokeRect(x, y, size, size);
-                    }
-                }
-            }
+            const scores = countSquares();
+            blackSquares = scores.black;
+            whiteSquares = scores.white;
             
-            // Draw all counters
-            for (let row = 0; row < gridSize; row++) {
-                for (let col = 0; col < gridSize; col++) {
-                    if (grid[row][col]) {
-                        drawCounter(col, row, grid[row][col]);
-                    }
-                }
+            currentPlayer = currentPlayer === 'black' ? 'white' : 'black';
+            
+            if (moveCount >= 64) gameOver = true;
+            
+            drawGrid();
+            updateDisplay();
+            
+            if (currentPlayer === 'white' && !gameOver) {
+                setTimeout(botMove, 1000);
             }
         }
 
-        // Evaluate move for AI
-        function evaluateMove(row, col, player) {
-            let score = 0;
+        // AI move
+        function botMove() {
+            if (gameOver || currentPlayer !== 'white' || botThinking) return;
             
-            // Test placing piece
-            grid[row][col] = player;
-            const newScores = countSquares();
-            const currentScores = { black: blackSquares, white: whiteSquares };
-            const gained = (player === 'white' ? newScores.white : newScores.black) - 
-                          (player === 'white' ? currentScores.white : currentScores.black);
-            score += gained * 100;
+            botThinking = true;
+            updateGameStatus();
             
-            // Test blocking opponent
-            grid[row][col] = player === 'white' ? 'black' : 'white';
-            const blockScores = countSquares();
-            const blocked = (player === 'white' ? blockScores.black : blockScores.white) - 
-                           (player === 'white' ? currentScores.black : currentScores.white);
-            score += blocked * 50;
-            
-            // Reset
-            grid[row][col] = null;
-            
-            // Center preference
-            const centerDistance = Math.abs(row - 3.5) + Math.abs(col - 3.5);
-            score += (7 - centerDistance) * 2;
-            
-            return score;
+            setTimeout(() => {
+                const move = getBestMove();
+                if (move) {
+                    placeCounter(move.col, move.row);
+                }
+                botThinking = false;
+                updateGameStatus();
+            }, 800);
         }
 
-        // AI finds best move
+        // Get best AI move
         function getBestMove() {
             const emptySpaces = [];
-            
             for (let row = 0; row < gridSize; row++) {
                 for (let col = 0; col < gridSize; col++) {
                     if (grid[row][col] === null) {
@@ -544,11 +735,36 @@
             
             if (emptySpaces.length === 0) return null;
             
+            if (aiDifficulty === 'easy') {
+                return emptySpaces[Math.floor(Math.random() * emptySpaces.length)];
+            }
+            
             let bestScore = -Infinity;
             let bestMoves = [];
             
             for (const space of emptySpaces) {
-                const score = evaluateMove(space.row, space.col, 'white');
+                let score = 0;
+                
+                // Test completing squares
+                grid[space.row][space.col] = 'white';
+                const newScores = countSquares();
+                score += (newScores.white - whiteSquares) * 100;
+                
+                // Test blocking player
+                grid[space.row][space.col] = 'black';
+                const blockScores = countSquares();
+                score += (blockScores.black - blackSquares) * 50;
+                
+                grid[space.row][space.col] = null;
+                
+                // Center preference
+                const centerDistance = Math.abs(space.row - 3.5) + Math.abs(space.col - 3.5);
+                score += (7 - centerDistance) * 2;
+                
+                if (aiDifficulty === 'hard') {
+                    score += Math.random() * 20; // Add some unpredictability
+                }
+                
                 if (score > bestScore) {
                     bestScore = score;
                     bestMoves = [space];
@@ -560,75 +776,57 @@
             return bestMoves[Math.floor(Math.random() * bestMoves.length)];
         }
 
-        // Bot makes a move
-        function botMove() {
-            if (gameOver || currentPlayer !== 'white' || botThinking) return;
+        // Settings functions
+        function openSettings() {
+            document.getElementById('settingsModal').classList.add('show');
+            document.querySelector(`input[value="${aiDifficulty}"]`).checked = true;
+            updateSelectedOption();
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsModal').classList.remove('show');
+        }
+
+        function selectDifficulty(difficulty) {
+            document.querySelector(`input[value="${difficulty}"]`).checked = true;
+            updateSelectedOption();
+        }
+
+        function updateSelectedOption() {
+            document.querySelectorAll('.difficulty-option').forEach(option => {
+                option.classList.remove('selected');
+            });
             
-            botThinking = true;
-            updateGameStatus();
-            
-            const move = getBestMove();
-            
-            if (move) {
-                setTimeout(() => {
-                    placeCounter(move.col, move.row);
-                    botThinking = false;
-                    updateGameStatus(); // Update status after bot finishes thinking
-                }, 800);
-            } else {
-                botThinking = false;
-                updateGameStatus(); // Update status if no move available
+            const checked = document.querySelector('input[name="difficulty"]:checked');
+            if (checked) {
+                checked.closest('.difficulty-option').classList.add('selected');
             }
         }
 
-        // Place a counter on the grid
-        function placeCounter(col, row) {
-            if (grid[row][col] !== null || gameOver) return;
+        function saveSettings() {
+            aiDifficulty = document.querySelector('input[name="difficulty"]:checked').value;
             
-            grid[row][col] = currentPlayer;
-            moveCount++;
+            const names = { easy: '🟢 Easy', intermediate: '🟡 Intermediate', hard: '🔴 Hard' };
+            document.getElementById('currentDifficultyText').textContent = names[aiDifficulty];
             
-            // Update scores
-            const scores = countSquares();
-            blackSquares = scores.black;
-            whiteSquares = scores.white;
+            closeSettings();
             
-            // Switch players
-            currentPlayer = currentPlayer === 'black' ? 'white' : 'black';
-            
-            // Check game over
-            if (moveCount >= 64) {
-                gameOver = true;
-            }
-            
-            // Update display
-            drawGrid();
-            updateGameStatus();
-            updateScores();
-            updateMoveCounter();
-            
-            // Bot's turn
-            if (currentPlayer === 'white' && !gameOver) {
-                setTimeout(botMove, 1000);
-            }
+            const statusEl = document.getElementById('gameStatus');
+            statusEl.textContent = `Settings saved! AI difficulty: ${names[aiDifficulty]}`;
+            setTimeout(updateDisplay, 2000);
         }
 
-        // Restart the game
         function restartGame() {
-            resetGameState();
-            drawGrid();
-            updateGameStatus();
-            updateScores();
-            updateMoveCounter();
+            initGame();
         }
 
-        // Handle mouse clicks with responsive coordinates
+        // Event listeners
         canvas.addEventListener('click', function(event) {
             if (gameOver || currentPlayer !== 'black' || botThinking) return;
             
             const rect = canvas.getBoundingClientRect();
-            const scaleX = 480 / rect.width;
-            const scaleY = 480 / rect.height;
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
             
             const x = (event.clientX - rect.left) * scaleX;
             const y = (event.clientY - rect.top) * scaleY;
@@ -641,65 +839,23 @@
             }
         });
 
-        // Handle mouse hover with responsive coordinates
-        canvas.addEventListener('mousemove', function(event) {
-            if (gameOver || currentPlayer !== 'black' || botThinking) {
-                canvas.style.cursor = 'not-allowed';
-                return;
-            }
-            
-            const rect = canvas.getBoundingClientRect();
-            const scaleX = 480 / rect.width;
-            const scaleY = 480 / rect.height;
-            
-            const x = (event.clientX - rect.left) * scaleX;
-            const y = (event.clientY - rect.top) * scaleY;
-            
-            const col = Math.floor(x / cellSize);
-            const row = Math.floor(y / cellSize);
-            
-            if (col >= 0 && col < gridSize && row >= 0 && row < gridSize && grid[row][col] === null) {
-                canvas.style.cursor = 'pointer';
-            } else {
-                canvas.style.cursor = 'default';
-            }
-        });
-
-        // Handle touch events for mobile
         canvas.addEventListener('touchstart', function(event) {
             event.preventDefault();
-            if (gameOver || currentPlayer !== 'black' || botThinking) return;
-            
-            const rect = canvas.getBoundingClientRect();
-            const touch = event.touches[0];
-            const scaleX = 480 / rect.width;
-            const scaleY = 480 / rect.height;
-            
-            const x = (touch.clientX - rect.left) * scaleX;
-            const y = (touch.clientY - rect.top) * scaleY;
-            
-            const col = Math.floor(x / cellSize);
-            const row = Math.floor(y / cellSize);
-            
-            if (col >= 0 && col < gridSize && row >= 0 && row < gridSize) {
-                placeCounter(col, row);
-            }
+            const clickEvent = new MouseEvent('click', {
+                clientX: event.touches[0].clientX,
+                clientY: event.touches[0].clientY
+            });
+            canvas.dispatchEvent(clickEvent);
         });
 
-        // Resize canvas on window resize
-        window.addEventListener('resize', function() {
-            if (grid && grid.length > 0) {
-                resizeCanvas();
-            }
+        document.getElementById('settingsModal').addEventListener('click', function(event) {
+            if (event.target === this) closeSettings();
         });
 
-        // Start the game
-        resetGameState(); // This initializes the grid
-        resizeCanvas();   // Now safe to resize
-        drawGrid();
-        updateGameStatus();
-        updateScores();
-        updateMoveCounter();
+        window.addEventListener('resize', setupCanvas);
+
+        // Start game
+        initGame();
     </script>
 </body>
 </html>
